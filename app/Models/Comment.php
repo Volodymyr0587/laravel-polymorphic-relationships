@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Comment extends Model
 {
-    protected $fillable = ['comment', 'commentable_id', 'commentable_type'];
+    protected $fillable = ['comment'];
 
     public function commentable(): MorphTo
     {
