@@ -2,201 +2,207 @@
 <html>
 
 <head>
-    <title>Laravel Polymorphic Relationships - Learning Page</title>
+    <title>Polymorphic Relationships Visualization</title>
+
     <style>
         body {
-            background-color: lightblue;
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 40px;
         }
 
         h1 {
-            color: navy;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .tree {
+            margin-left: 20px;
+        }
+
+        .node {
+            margin: 4px 0;
+        }
+
+        .type {
+            color: #666;
+        }
+
+        .comment {
+            color: #444;
+        }
+
+        .tag {
+            color: #0a58ca;
+        }
+
+        hr {
+            margin: 50px 0;
         }
     </style>
+
 </head>
 
 <body>
 
-    <h1>Laravel Polymorphic Relationships (One To Many)</h1>
+    <h1>Laravel Polymorphic Relationships – Visual Learning Page</h1>
 
     <hr>
 
-    <h2>Database Structure</h2>
+    <div class="section">
 
-    <h3>products</h3>
-    <ul>
-        <li>id</li>
-        <li>title</li>
-    </ul>
+        <h2>Products → Comments & Tags</h2>
 
-    <h3>articles</h3>
-    <ul>
-        <li>id</li>
-        <li>title</li>
-    </ul>
+        @foreach ($products as $product)
+            <div class="card">
 
-    <h3>comments</h3>
-    <ul>
-        <li>id</li>
-        <li>comment</li>
-        <li>commentable_id</li>
-        <li>commentable_type</li>
-    </ul>
+                <strong>Product:</strong> {{ $product->title }}
 
-    <p>
-        Both <strong>Product</strong> and <strong>Article</strong> can have comments using the same table.
-    </p>
+                <div class="tree">
 
-    <hr>
+                    @forelse($product->comments as $comment)
+                        <div class="node comment">
+                            ├─ Comment: "{{ $comment->comment }}"
+                        </div>
 
-    <h2>Products → Comments</h2>
+                    @empty
+                        <div class="node">├─ No comments</div>
+                    @endforelse
 
-    @foreach ($products as $product)
-        <div style="margin-bottom:20px">
+                    @forelse($product->tags as $tag)
+                        <div class="node tag">
+                            └─ Tag: {{ $tag->name }}
+                        </div>
 
-            <strong>Product:</strong> {{ $product->title }}
+                    @empty
+                        <div class="node">└─ No tags</div>
+                    @endforelse
 
-            <br>
-            <strong>Comments:</strong>
+                </div>
 
-            <ul>
-                @forelse ($product->comments as $comment)
-                    <li>
-                        {{ $comment->comment }}
-
-                        <br>
-
-                        <small>
-                            commentable_type: {{ $comment->commentable_type }}
-                            |
-                            commentable_id: {{ $comment->commentable_id }}
-                        </small>
-                    </li>
-
-                @empty
-                    <li>No comments</li>
-                @endforelse
-            </ul>
-
-        </div>
-    @endforeach
-
-
-    <hr>
-
-    <h2>Articles → Comments</h2>
-
-    @foreach ($articles as $article)
-        <div style="margin-bottom:20px">
-
-            <strong>Article:</strong> {{ $article->title }}
-
-            <br>
-            <strong>Comments:</strong>
-
-            <ul>
-                @forelse ($article->comments as $comment)
-                    <li>
-                        {{ $comment->comment }}
-
-                        <br>
-
-                        <small>
-                            commentable_type: {{ $comment->commentable_type }}
-                            |
-                            commentable_id: {{ $comment->commentable_id }}
-                        </small>
-                    </li>
-
-                @empty
-                    <li>No comments</li>
-                @endforelse
-            </ul>
-
-        </div>
-    @endforeach
-
-
-    <hr>
-
-    <h2>All Comments → Parent Model (commentable)</h2>
-
-    <table border="1" cellpadding="6">
-
-        <tr>
-            <th>Comment</th>
-            <th>Type</th>
-            <th>ID</th>
-            <th>Parent Title</th>
-        </tr>
-
-        @foreach ($comments as $comment)
-            <tr>
-                <td>{{ $comment->comment }}</td>
-
-                <td>{{ class_basename($comment->commentable_type) }}</td>
-
-                <td>{{ $comment->commentable_id }}</td>
-
-                <td>
-                    {{ $comment->commentable->title ?? 'N/A' }}
-                </td>
-            </tr>
+            </div>
         @endforeach
 
-    </table>
+    </div>
 
     <hr>
 
-    <h2>Relationship Explanation</h2>
+    <div class="section">
 
-    <p><strong>Product model</strong></p>
+        <h2>Articles → Comments & Tags</h2>
 
-    <pre>
-public function comments()
-{
-    return $this->morphMany(Comment::class, 'commentable');
-}
-</pre>
+        @foreach ($articles as $article)
+            <div class="card">
 
-    <p><strong>Article model</strong></p>
+                <strong>Article:</strong> {{ $article->title }}
 
-    <pre>
-public function comments()
-{
-    return $this->morphMany(Comment::class, 'commentable');
-}
-</pre>
+                <div class="tree">
 
-    <p><strong>Comment model</strong></p>
+                    @forelse($article->comments as $comment)
+                        <div class="node comment">
+                            ├─ Comment: "{{ $comment->comment }}"
+                        </div>
 
-    <pre>
-public function commentable()
-{
-    return $this->morphTo();
-}
-</pre>
+                    @empty
+                        <div class="node">├─ No comments</div>
+                    @endforelse
+
+                    @forelse($article->tags as $tag)
+                        <div class="node tag">
+                            └─ Tag: {{ $tag->name }}
+                        </div>
+
+                    @empty
+                        <div class="node">└─ No tags</div>
+                    @endforelse
+
+                </div>
+
+            </div>
+        @endforeach
+
+    </div>
 
     <hr>
 
-    <h2>How Laravel stores polymorphic relationships</h2>
+    <div class="section">
 
-    <p>
-        Instead of storing <code>product_id</code> or <code>article_id</code>, Laravel stores:
-    </p>
+        <h2>Tags → Related Models</h2>
 
-    <ul>
-        <li><strong>commentable_id</strong> → id of the parent</li>
-        <li><strong>commentable_type</strong> → model class name</li>
-    </ul>
+        @foreach ($tags as $tag)
+            <div class="card">
 
-    <p>Example records:</p>
+                <strong>Tag:</strong> {{ $tag->name }}
 
-    <pre>
-id | comment           | commentable_id | commentable_type
----------------------------------------------------------
-1  | Great product     | 1              | App\Models\Product
-2  | Helpful article   | 2              | App\Models\Article
+                <div class="tree">
+
+                    @forelse($tag->products as $product)
+                        <div class="node">
+                            ├─ Product: {{ $product->title }}
+                        </div>
+
+                    @empty
+                        <div class="node">├─ No products</div>
+                    @endforelse
+
+                    @forelse($tag->articles as $article)
+                        <div class="node">
+                            └─ Article: {{ $article->title }}
+                        </div>
+
+                    @empty
+                        <div class="node">└─ No articles</div>
+                    @endforelse
+
+                </div>
+
+            </div>
+        @endforeach
+
+    </div>
+
+    <hr>
+
+    <div class="section">
+
+        <h2>Concept Summary</h2>
+
+        <pre>
+ONE TO MANY POLYMORPHIC
+
+Product
+  ├─ Comment
+  └─ Comment
+
+Article
+  └─ Comment
+
+
+MANY TO MANY POLYMORPHIC
+
+Product
+  └─ Tag
+
+Article
+  └─ Tag
+
+Tag
+  ├─ Product
+  └─ Article
 </pre>
+
+    </div>
 
 </body>
 
