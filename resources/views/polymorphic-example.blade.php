@@ -50,6 +50,20 @@
         hr {
             margin: 50px 0;
         }
+
+        a {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #0a58ca;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        a:hover {
+            background: #084298;
+        }
     </style>
 
 </head>
@@ -57,6 +71,12 @@
 <body>
 
     <h1>Laravel Polymorphic Relationships – Visual Learning Page</h1>
+
+    <p>
+        <a href="{{ url('/control-panel') }}">
+            Open Control Panel
+        </a>
+    </p>
 
     <hr>
 
